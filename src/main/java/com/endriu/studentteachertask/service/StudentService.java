@@ -2,6 +2,9 @@ package com.endriu.studentteachertask.service;
 
 import com.endriu.studentteachertask.domain.Student;
 import com.endriu.studentteachertask.repository.StudentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +20,9 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    public Page<Student> findStudentsWithPaginationAndSorting(int offset, int pageSisze, String field) {
+        return studentRepository.findAll(PageRequest.of(offset, pageSisze)
+                .withSort(Sort.by(Sort.Direction.ASC, field)));
     }
 
     public void addNewStudent(Student student) {

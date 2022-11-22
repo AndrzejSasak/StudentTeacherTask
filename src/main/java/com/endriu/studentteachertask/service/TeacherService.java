@@ -1,10 +1,13 @@
 package com.endriu.studentteachertask.service;
 
+import com.endriu.studentteachertask.domain.Student;
 import com.endriu.studentteachertask.domain.Teacher;
 import com.endriu.studentteachertask.repository.TeacherRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -17,8 +20,9 @@ public class TeacherService {
         this.teacherRepository = teacherRepository;
     }
 
-    public List<Teacher> getAllTeachers() {
-        return teacherRepository.findAll();
+    public Page<Teacher> findTeachersWithPaginationAndSorting(int offset, int pageSisze, String field) {
+        return teacherRepository.findAll(PageRequest.of(offset, pageSisze)
+                .withSort(Sort.by(Sort.Direction.ASC, field)));
     }
 
     public void addNewTeacher(Teacher teacher) {

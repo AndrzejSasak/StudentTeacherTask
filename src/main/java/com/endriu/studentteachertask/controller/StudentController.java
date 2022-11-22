@@ -2,10 +2,8 @@ package com.endriu.studentteachertask.controller;
 
 import com.endriu.studentteachertask.domain.Student;
 import com.endriu.studentteachertask.service.StudentService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/students")
@@ -17,9 +15,11 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    @GetMapping("/pagination/{offset}/{pageSize}/{field}")
+    public Page<Student> getStudentsWithSortingAndPagination(@PathVariable int offset,
+                                                             @PathVariable int pageSize,
+                                                             @PathVariable String field) {
+        return studentService.findStudentsWithPaginationAndSorting(offset, pageSize, field);
     }
 
     @PostMapping
