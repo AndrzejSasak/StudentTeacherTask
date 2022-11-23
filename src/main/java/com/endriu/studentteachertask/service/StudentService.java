@@ -88,6 +88,35 @@ public class StudentService {
         studentRepository.deleteById(studentId);
     }
 
+    public List<Student> getStudentsOfTeacher(Long teacherId) {
+        return studentRepository.findAllStudentsOfTeacher(teacherId);
+    }
+
+    public List<Student> getStudentsByFirstNameAndLastName(String firstName, String lastName) {
+        return studentRepository.findAllByFirstNameAndLastName(firstName, lastName);
+    }
+
+    public void removeTeacherOfStudent(Long studentId, Long teacherId) {
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        Optional<Teacher> teacherOptional = teacherRepository.findById(teacherId);
+
+        if(studentOptional.isEmpty()) {
+            //TODO: throw exception and return status code
+        }
+
+        if(teacherOptional.isEmpty()) {
+            //TODO: throw exception and return status code
+        }
+
+        if(studentOptional.isPresent() && teacherOptional.isPresent()) {
+            Student student = studentOptional.get();
+            Teacher teacher = teacherOptional.get();
+
+            teacher.removeStudent(student);
+            teacherRepository.save(teacher);
+        }
+    }
+
     private boolean isEmailValid(String email) {
         return Pattern.compile("^(.+)@(\\S+)$").matcher(email).matches();
     }
@@ -98,13 +127,5 @@ public class StudentService {
 
     private boolean isAgeValid(int age) {
         return age > 18;
-    }
-
-    public List<Student> getStudentsOfTeacher(Long teacherId) {
-        return studentRepository.findAllStudentsOfTeacher(teacherId);
-    }
-
-    public List<Student> getStudentsByFirstNameAndLastName(String firstName, String lastName) {
-        return studentRepository.findAllByFirstNameAndLastName(firstName, lastName);
     }
 }

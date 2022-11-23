@@ -55,4 +55,9 @@ public class TeacherController {
         teacherService.deleteTeacher(teacherId);
     }
 
+    @DeleteMapping("/{teacherId}/{studentId}")
+    public void removeStudentOfTeacher(@PathVariable Long teacherId, @PathVariable Long studentId) {
+        teacherService.removeStudentOfTeacher(teacherId, studentId);
+    }
+
 }
