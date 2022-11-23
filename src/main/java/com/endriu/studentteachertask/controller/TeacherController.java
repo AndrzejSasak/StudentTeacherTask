@@ -17,7 +17,7 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
 
-    @GetMapping("/pagination/{offset}/{pageSize}/{field}")
+    @GetMapping("/{offset}/{pageSize}/{field}")
     public Page<Teacher> getStudentsWithSortingAndPagination(@PathVariable int offset,
                                                              @PathVariable int pageSize,
                                                              @PathVariable String field) {

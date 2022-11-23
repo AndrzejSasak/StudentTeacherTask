@@ -1,6 +1,5 @@
 package com.endriu.studentteachertask.repository;
 
-import com.endriu.studentteachertask.domain.Student;
 import com.endriu.studentteachertask.domain.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

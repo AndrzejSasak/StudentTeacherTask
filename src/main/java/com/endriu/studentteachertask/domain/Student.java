@@ -27,8 +27,4 @@ public class Student {
     @ManyToMany(mappedBy = "students")
     private List<Teacher> teachers;
 
-    public void addTeacher(Teacher teacher) {
-        teachers.add(teacher);
-    }
-
 }
