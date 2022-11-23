@@ -1,7 +1,9 @@
 package com.endriu.studentteachertask.service;
 
 import com.endriu.studentteachertask.domain.Student;
+import com.endriu.studentteachertask.domain.Teacher;
 import com.endriu.studentteachertask.repository.StudentRepository;
+import com.endriu.studentteachertask.repository.TeacherRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -15,9 +17,11 @@ import java.util.regex.Pattern;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, TeacherRepository teacherRepository) {
         this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
     }
 
     public Page<Student> findStudentsWithPaginationAndSorting(int offset, int pageSisze, String field) {
@@ -26,7 +30,7 @@ public class StudentService {
     }
 
     public void addNewStudent(Student student) {
-        Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
+        Optional<Student> studentOptional = studentRepository.findByEmail(student.getEmail());
 
         if(studentOptional.isPresent()) {
             throw new IllegalStateException("Student with this email already exists");
@@ -47,8 +51,31 @@ public class StudentService {
         studentRepository.save(student);
     }
 
+    public void addTeacherToStudent(Long studentId, Long teacherId) {
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        Optional<Teacher> teacherOptional = teacherRepository.findById(teacherId);
+
+        if(studentOptional.isEmpty()) {
+            //TODO: throw exception and return status code
+        }
+
+        if(teacherOptional.isEmpty()) {
+            //TODO: throw exception and return status code
+        }
+
+        if(studentOptional.isPresent() && teacherOptional.isPresent()) {
+            Student student = studentOptional.get();
+            Teacher teacher = teacherOptional.get();
+
+            teacher.addStudent(student);
+            teacherRepository.save(teacher);
+        }
+
+    }
+
     public void editStudentInfo(Long studentId, Student student) {
         Optional<Student> studentOptional = studentRepository.findById(studentId);
+        student.setId(studentId);
 
         if(studentOptional.isEmpty()) {
             throw new IllegalStateException("Student with this ID not found");
@@ -71,5 +98,13 @@ public class StudentService {
 
     private boolean isAgeValid(int age) {
         return age > 18;
+    }
+
+    public List<Student> getStudentsOfTeacher(Long teacherId) {
+        return studentRepository.findAllStudentsOfTeacher(teacherId);
+    }
+
+    public List<Student> getStudentsByFirstNameAndLastName(String firstName, String lastName) {
+        return studentRepository.findAllByFirstNameAndLastName(firstName, lastName);
     }
 }

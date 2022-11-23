@@ -1,13 +1,17 @@
 package com.endriu.studentteachertask.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "teacher")
+@JsonIgnoreProperties("students")
 public class Teacher {
 
     @Id
@@ -27,6 +31,10 @@ public class Teacher {
             inverseJoinColumns = @JoinColumn(name = "student_id")
     )
     private List<Student> students;
+
+    public void addStudent(Student student) {
+        students.add(student);
+    }
 
 
 }

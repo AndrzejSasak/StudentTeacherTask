@@ -1,6 +1,5 @@
 package com.endriu.studentteachertask.controller;
 
-import com.endriu.studentteachertask.domain.Student;
 import com.endriu.studentteachertask.domain.Teacher;
 import com.endriu.studentteachertask.service.TeacherService;
 import org.springframework.data.domain.Page;
@@ -25,9 +24,25 @@ public class TeacherController {
         return teacherService.findTeachersWithPaginationAndSorting(offset, pageSize, field);
     }
 
+    @GetMapping
+    public List<Teacher> getTeachersOfStudent(@RequestParam Long studentId) {
+        return teacherService.getTeachersOfStudent(studentId);
+    }
+
+    @GetMapping("/by-full-name")
+    public List<Teacher> getTeachersByFirstNameAndLastName(@RequestParam String firstName,
+                                                           @RequestParam String lastName) {
+        return teacherService.getStudentsByFirstNameAndLastName(firstName, lastName);
+    }
+
     @PostMapping
-    public void registerStudent(@RequestBody Teacher teacher) {
+    public void registerTeacher(@RequestBody Teacher teacher) {
         teacherService.addNewTeacher(teacher);
+    }
+
+    @PostMapping("/{teacherId}/{studentId}")
+    public void assignStudentToTeacher(@PathVariable Long teacherId, @PathVariable Long studentId) {
+        teacherService.addStudentToTeacher(teacherId, studentId);
     }
 
     @PutMapping("/{teacherId}")

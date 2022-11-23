@@ -5,6 +5,8 @@ import com.endriu.studentteachertask.service.StudentService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/students")
 public class StudentController {
@@ -22,9 +24,25 @@ public class StudentController {
         return studentService.findStudentsWithPaginationAndSorting(offset, pageSize, field);
     }
 
+    @GetMapping
+    public List<Student> getStudentsOfTeacher(@RequestParam Long teacherId) {
+        return studentService.getStudentsOfTeacher(teacherId);
+    }
+
+    @GetMapping("/by-full-name")
+    public List<Student> getStudentsByFirstNameAndLastName(@RequestParam String firstName,
+                                                           @RequestParam String lastName) {
+        return studentService.getStudentsByFirstNameAndLastName(firstName, lastName);
+    }
+
     @PostMapping
     public void registerStudent(@RequestBody Student student) {
         studentService.addNewStudent(student);
+    }
+
+    @PostMapping("/{studentId}/{teacherId}")
+    public void assignTeacherToStudent(@PathVariable Long studentId, @PathVariable Long teacherId) {
+        studentService.addTeacherToStudent(studentId, teacherId);
     }
 
     @PutMapping("/{studentId}")
