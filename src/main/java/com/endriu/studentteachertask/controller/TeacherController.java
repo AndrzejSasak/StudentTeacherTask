@@ -31,6 +31,7 @@ public class TeacherController extends GenericController<Teacher> {
         try {
             teacherService.addStudentToTeacher(teacherId, studentId);
         } catch(IllegalArgumentException illegalArgumentException) {
+            System.out.println(illegalArgumentException.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -41,6 +42,7 @@ public class TeacherController extends GenericController<Teacher> {
         try {
             teacherService.removeStudentOfTeacher(teacherId, studentId);
         } catch(IllegalArgumentException illegalArgumentException) {
+            System.out.println(illegalArgumentException.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);

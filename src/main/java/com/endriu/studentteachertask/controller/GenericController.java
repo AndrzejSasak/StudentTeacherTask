@@ -37,6 +37,7 @@ public abstract class GenericController<T extends GenericEntity> {
         try {
             service.addNewEntity(entity);
         } catch(IllegalArgumentException illegalArgumentException) {
+            System.out.println(illegalArgumentException.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -47,6 +48,7 @@ public abstract class GenericController<T extends GenericEntity> {
         try {
             service.editEntityInfo(entityId, entity);
         } catch(IllegalArgumentException illegalArgumentException) {
+            System.out.println(illegalArgumentException.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -57,6 +59,7 @@ public abstract class GenericController<T extends GenericEntity> {
         try {
             service.deleteEntity(entityId);
         } catch(EmptyResultDataAccessException emptyResultDataAccessException) {
+            System.out.println(emptyResultDataAccessException.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
