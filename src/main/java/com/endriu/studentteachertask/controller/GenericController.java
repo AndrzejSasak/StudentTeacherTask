@@ -3,6 +3,8 @@ package com.endriu.studentteachertask.controller;
 import com.endriu.studentteachertask.domain.GenericEntity;
 import com.endriu.studentteachertask.repository.GenericRepository;
 import com.endriu.studentteachertask.service.GenericService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import java.util.List;
 public abstract class GenericController<T extends GenericEntity> {
 
     private final GenericService<T> service;
+    protected final Logger LOGGER = LoggerFactory.getLogger(GenericController.class);
 
     protected GenericController(GenericRepository<T> repository) {
         this.service = new GenericService<>(repository) {};
@@ -37,7 +40,7 @@ public abstract class GenericController<T extends GenericEntity> {
         try {
             service.addNewEntity(entity);
         } catch(IllegalArgumentException illegalArgumentException) {
-            System.out.println(illegalArgumentException.getMessage());
+            LOGGER.error(illegalArgumentException.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -48,7 +51,7 @@ public abstract class GenericController<T extends GenericEntity> {
         try {
             service.editEntityInfo(entityId, entity);
         } catch(IllegalArgumentException illegalArgumentException) {
-            System.out.println(illegalArgumentException.getMessage());
+            LOGGER.error(illegalArgumentException.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -59,7 +62,7 @@ public abstract class GenericController<T extends GenericEntity> {
         try {
             service.deleteEntity(entityId);
         } catch(EmptyResultDataAccessException emptyResultDataAccessException) {
-            System.out.println(emptyResultDataAccessException.getMessage());
+            LOGGER.error(emptyResultDataAccessException.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
