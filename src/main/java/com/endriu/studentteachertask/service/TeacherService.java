@@ -55,7 +55,7 @@ public class TeacherService extends GenericService<Teacher> {
         }
 
         Teacher teacher = teacherOptional.get();
-        teacher.addStudent(studentOptional.get());
+        teacher.removeStudent(studentOptional.get());
         teacherRepository.delete(teacher);
     }
 
