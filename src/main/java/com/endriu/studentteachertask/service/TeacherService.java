@@ -4,50 +4,25 @@ import com.endriu.studentteachertask.domain.Student;
 import com.endriu.studentteachertask.domain.Teacher;
 import com.endriu.studentteachertask.repository.StudentRepository;
 import com.endriu.studentteachertask.repository.TeacherRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Service
-public class TeacherService {
+public class TeacherService extends GenericService<Teacher> {
 
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
 
     public TeacherService(TeacherRepository teacherRepository, StudentRepository studentRepository) {
+        super(teacherRepository);
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
     }
 
-    public Page<Teacher> findTeachersWithPaginationAndSorting(int offset, int pageSisze, String field) {
-        return teacherRepository.findAll(PageRequest.of(offset, pageSisze)
-                .withSort(Sort.by(Sort.Direction.ASC, field)));
-    }
-
-    public void addNewTeacher(Teacher teacher) {
-        Optional<Teacher> studentOptional = teacherRepository.findTeacherByEmail(teacher.getEmail());
-
-        if(studentOptional.isPresent()) {
-            throw new IllegalStateException("Teacher with this email already exists");
-        }
-        if(!isEmailValid(teacher.getEmail())) {
-            throw new IllegalArgumentException("Email address not valid");
-        }
-
-        if(!isFirstNameValid(teacher.getFirstName())) {
-            throw new IllegalArgumentException("First name cannot be shorter than 2 characters");
-        }
-
-        if(!isAgeValid(teacher.getAge())) {
-            throw new IllegalArgumentException("Age has to be above 18");
-        }
-
-        teacherRepository.save(teacher);
+    public List<Teacher> getTeachersOfStudent(Long studentId) {
+        return teacherRepository.findAllTeachersOfStudent(studentId);
     }
 
     public void addStudentToTeacher(Long teacherId, Long studentId) {
@@ -55,43 +30,16 @@ public class TeacherService {
         Optional<Teacher> teacherOptional = teacherRepository.findById(teacherId);
 
         if(studentOptional.isEmpty()) {
-            //TODO: throw exception and return status code
+            throw new IllegalArgumentException("Student with this ID not found");
         }
 
         if(teacherOptional.isEmpty()) {
-            //TODO: throw exception and return status code
+            throw new IllegalArgumentException("Teacher with this ID not found");
         }
 
-        if(studentOptional.isPresent() && teacherOptional.isPresent()) {
-            Student student = studentOptional.get();
-            Teacher teacher = teacherOptional.get();
-
-            teacher.addStudent(student);
-            teacherRepository.save(teacher);
-        }
-    }
-
-    public void editTeacherInfo(Long teacherId, Teacher teacher) {
-        Optional<Teacher> teacherOptional = teacherRepository.findById(teacherId);
-        teacher.setId(teacherId);
-
-        if(teacherOptional.isEmpty()) {
-            throw new IllegalStateException("Teacher with this ID not found");
-        }
-
+        Teacher teacher = teacherOptional.get();
+        teacher.addStudent(studentOptional.get());
         teacherRepository.save(teacher);
-    }
-
-    public void deleteTeacher(Long teacherId) {
-        teacherRepository.deleteById(teacherId);
-    }
-
-    public List<Teacher> getTeachersOfStudent(Long studentId) {
-        return teacherRepository.findAllTeachersOfStudent(studentId);
-    }
-
-    public List<Teacher> getStudentsByFirstNameAndLastName(String firstName, String lastName) {
-        return teacherRepository.findAllByFirstNameAndLastName(firstName, lastName);
     }
 
     public void removeStudentOfTeacher(Long teacherId, Long studentId) {
@@ -99,31 +47,16 @@ public class TeacherService {
         Optional<Teacher> teacherOptional = teacherRepository.findById(teacherId);
 
         if(studentOptional.isEmpty()) {
-            //TODO: throw exception and return status code
+            throw new IllegalArgumentException("Student with this ID not found");
         }
 
         if(teacherOptional.isEmpty()) {
-            //TODO: throw exception and return status code
+            throw new IllegalArgumentException("Teacher with this ID not found");
         }
 
-        if(studentOptional.isPresent() && teacherOptional.isPresent()) {
-            Student student = studentOptional.get();
-            Teacher teacher = teacherOptional.get();
-
-            teacher.removeStudent(student);
-            teacherRepository.save(teacher);
-        }
+        Teacher teacher = teacherOptional.get();
+        teacher.addStudent(studentOptional.get());
+        teacherRepository.delete(teacher);
     }
 
-    private boolean isEmailValid(String email) {
-        return Pattern.compile("^(.+)@(\\S+)$").matcher(email).matches();
-    }
-
-    private boolean isFirstNameValid(String firstName) {
-        return firstName.length() > 2;
-    }
-
-    private boolean isAgeValid(int age) {
-        return age > 18;
-    }
 }

@@ -13,7 +13,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "student")
 @JsonIgnoreProperties("teachers")
-public class Student {
+public class Student implements GenericEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
